@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo -iu user bash -i -c 'roslaunch ecn_bluerov boot.launch'

@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo -iu olivier bash -i -c 'roslaunch test boot.launch'

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<node name="test" pkg="ecn_bluerov" type="publisher.py"/>
+
+</launch>
