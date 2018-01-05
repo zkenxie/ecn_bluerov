@@ -10,14 +10,14 @@ rospy.init_node('pid')
 pub = rospy.Publisher('/gna', Float32, queue_size=1)
 
 msg = Float32()
-dt = 0.1
-w = 2*pi*3
+dt = 0.05
+f = .5
 t = 0
 
 
 while not rospy.is_shutdown():
     
-    msg.data = sin(w*t)
+    msg.data = sin(2*pi*f*t)
     t += dt
     
     pub.publish(msg)

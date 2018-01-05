@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 # /etc/init.d/rosboot.sh
 # kFreeBSD do not accept scripts as interpreters, using #!/bin/sh and sourcing.
 if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then

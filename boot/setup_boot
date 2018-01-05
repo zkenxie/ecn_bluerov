@@ -1,10 +1,10 @@
-#!/usr/bin/sh
+#!/bin/bash
 
 LOGIN=$USER
-sudo echo $LOGIN
+sudo echo "ROS will run from user $LOGIN"
 
 # main script
-sudo sed s/user/$LOGIN/ < rosboot > /usr/local/bin/rosboot
+echo "sed s/user/$LOGIN/ < rosboot > /usr/local/bin/rosboot" | sudo sh
 sudo chmod a+x /usr/local/bin/rosboot
 
 # service
