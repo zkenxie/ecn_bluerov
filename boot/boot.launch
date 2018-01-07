@@ -2,6 +2,6 @@
 
 <launch>
 
-	<node name="test" pkg="ecn_bluerov" type="publisher.py"/>
+	<node name="test" pkg="ecn_bluerov" type="publisher.py" respawn="true"/>
 
 </launch>
