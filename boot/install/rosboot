@@ -1,2 +1,3 @@
 #!/bin/bash
+chmod a+rw -R /sys/class/pwm/pwmchip0/
 sudo -iu user bash -i -c 'roslaunch ecn_bluerov boot.launch'
