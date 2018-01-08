@@ -1,8 +1,0 @@
-prefix=/home/ecn/ros/src/ecn_bluerov/build/devel
-
-Name: ecn_bluerov
-Description: Description of ecn_bluerov
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/ecn/ros/src/ecn_bluerov/build/devel/lib 
-Requires: 
