@@ -3,7 +3,7 @@
 import navio2.pwm
 import navio2.util
 import rospy
-import nympy as np
+import numpy as np
 from scipy.interpolate import interp1d
 from sensor_msgs.msg import JointState
 import time
@@ -14,7 +14,7 @@ map_pwm = np.array([1.100,1.500,1.900])
 
 class Listener:
     def __init__(self):
-        self.thr = [0,0,0,0,0,0]
+        self.thr = [0.,0.,0.,0.,0.,0.]
         self.sub = rospy.Subscriber('thruster_command', JointState, self.callback)
         
     def callback(self, msg):
@@ -22,7 +22,9 @@ class Listener:
             try:
                 # look for corresponding thruster name and copies in this
                 idx = msg.name.index('thr{}'.format(i+1))
-                if msg.effort[idx] >= force[0] and msg.effort[idx] <= force[-1]:
+                print 'Found thr{}'.format(i+1)
+
+                if msg.effort[idx] >= map_force[0] and msg.effort[idx] <= map_force[-1]:
                     self.thr[i] = msg.effort[idx]
             except:
                 pass
@@ -44,7 +46,7 @@ for PWM_OUTPUT in PWM_OUTPUTs:
         pwm.set_period(50)
         pwm.enable()
         pwm.set_duty_cycle(1.500)
-    time.sleep(1)
+    time.sleep(.1)
 
 
 # applies subscribed forces
@@ -57,8 +59,9 @@ while not rospy.is_shutdown():
     for idx,PWM_OUTPUT in enumerate(PWM_OUTPUTs):
         with navio2.pwm.PWM(PWM_OUTPUT) as pwm:
             v = pwm_interp(listener.thr[idx])
-            print('Thr {}, {} N = {} PWM'.format(listener.thr[idx],v))
-            #pwm.set_duty_cycle(1.500)
+            if listener.thr[idx] != 0:
+                print('Thr {}, {} N = {} PWM'.format(idx+1, listener.thr[idx],v))
+            pwm.set_duty_cycle(v)
             
     rospy.sleep(T)
     
