@@ -5,6 +5,7 @@ add_compile_options(-std=c++11)
 
 
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
   cv_bridge
   sensor_msgs
   std_msgs
@@ -23,11 +24,18 @@ catkin_package(
 include_directories(
   Navio2/C++/Navio/Navio2
   Navio2/C++/Navio/Common
+  Navio2/C++/Navio
   ${catkin_INCLUDE_DIRS}
 )
 
 file(GLOB navio2_SRC
     "Navio2/C++/Navio/Navio2/*.h"
+    "Navio2/C++/Navio/Common/*.h"
+    "Navio2/C++/Navio/Navio2/*.cpp"
     "Navio2/C++/Navio/Common/*.cpp"
 )
+message("Navio2: " ${navio2_SRC})
 add_library(navio2 ${navio2_SRC})
+
+add_executable(pwm boot/pwm.cpp)
+target_link_libraries(pwm navio2 ${catkin_LIBRARIES})
