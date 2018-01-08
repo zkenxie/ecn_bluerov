@@ -17,9 +17,10 @@ while True:
     for PWM_OUTPUT in PWM_OUTPUTs:
         with navio2.pwm.PWM(PWM_OUTPUT) as pwm:
             print("Arming pin #{}".format(PWM_OUTPUT))    
-            enabled = True
-            pwm.set_period(50)
-            pwm.enable()
+            if not enabled:
+                enabled = True
+                pwm.set_period(50)
+                pwm.enable()
             pwm.set_duty_cycle(1.500)
         time.sleep(2)
     

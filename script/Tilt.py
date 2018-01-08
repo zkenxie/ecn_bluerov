@@ -11,7 +11,7 @@ PWM_OUTPUT = 12
 SERVO_D = 0.4
 dt = .01
 t = 0
-f = 0
+f = 0.1
 
 if len(sys.argv) == 2:
     f = float(sys.argv[1])
