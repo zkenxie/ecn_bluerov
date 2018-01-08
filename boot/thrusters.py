@@ -9,6 +9,7 @@ from sensor_msgs.msg import JointState
 import time
 from os.path import exists
 
+
 # Thruster force mapping (in N)
 map_force = np.array([-30.,0.,30.])
 map_pwm = np.array([1.100,1.500,1.900])

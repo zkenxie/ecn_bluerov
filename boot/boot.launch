@@ -4,6 +4,7 @@
 
     <group ns="pirov">
 	    
+
     <!--node name="thrusters" pkg="ecn_bluerov" type="thrusters.py" respawn="true"/-->
     <!--node name="camera_tilt" pkg="ecn_bluerov" type="camera_tilt.py" respawn="true"/-->
 
