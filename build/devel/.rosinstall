@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/ecn/ros/src/ecn_bluerov/build/devel/setup.sh

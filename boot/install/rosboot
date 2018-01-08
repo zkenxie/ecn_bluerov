@@ -1,0 +1,4 @@
+#!/bin/bash
+#chmod 777 -R /sys/class/pwm/pwmchip0/
+#chmod 777 -R /sys/class/pwm/pwmchip0/pwm0
+bash -i -c 'roslaunch ecn_bluerov boot.launch'

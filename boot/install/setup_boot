@@ -1,0 +1,17 @@
+#!/bin/bash
+
+LOGIN=$USER
+sudo echo "ROS will run from user $LOGIN"
+
+# main script
+echo "sed s/user/$LOGIN/ < rosboot > /usr/local/bin/rosboot" | sudo sh
+sudo chmod a+x /usr/local/bin/rosboot
+
+sudo echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc
+sudo echo "source /home/$LOGIN/ros/devel/setup.bash" >> /root/.bashrc
+
+# service
+sudo cp rosboot.sh /etc/init.d
+sudo chmod a+x /etc/init.d/rosboot.sh
+#sudo update-rc.d rosboot.sh defaults
+
