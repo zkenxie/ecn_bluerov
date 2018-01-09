@@ -9,7 +9,14 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   sensor_msgs
   std_msgs
+  compressed_image_transport
 )
+
+message("CMP: ${CMAKE_MODULE_PATH}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/local/lib/cmake/")
+find_package(raspicam REQUIRED)
+#find_package(PkgConfig)
+#pkg_check_modules(raspicam raspicam)
 
 catkin_package(
 #  INCLUDE_DIRS include
@@ -34,8 +41,11 @@ file(GLOB navio2_SRC
     "Navio2/C++/Navio/Navio2/*.cpp"
     "Navio2/C++/Navio/Common/*.cpp"
 )
-message("Navio2: " ${navio2_SRC})
 add_library(navio2 ${navio2_SRC})
 
 add_executable(pwm boot/pwm.cpp)
 target_link_libraries(pwm navio2 ${catkin_LIBRARIES})
+
+
+add_executable(picam boot/picam.cpp)
+target_link_libraries(picam ${catkin_LIBRARIES} ${raspicam_CV_LIBS} ${raspicam_LIBS})
