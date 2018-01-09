@@ -67,9 +67,7 @@ int main(int argc, char *argv[])
     }
 
     // the PWM we control
-    const std::vector<int> pwm_idx = {0, 2, 4, 6, 8, 10};
-    const int tilt_idx = 12;
-
+    const std::vector<int> pwm_idx = {0, 2, 4, 6, 8, 10, 12};
     // wait for PWM
     auto pwm = std::unique_ptr <RCOutput_Navio2>{new RCOutput_Navio2()};
 
@@ -110,12 +108,18 @@ int main(int argc, char *argv[])
     {
         // apply thruster pwm
         for(int i = 0; i < 6; ++i)
-            pwm->set_duty_cycle(pwm_idx[i], interp(thruster_force[i], forces, forces_pwm));
+{
+double v = interp(thruster_force[i], forces, forces_pwm);
+std::cout << "Thr# " << i << ", force = " << thruster_force[i] << ", pwm = " << v << std::endl; 
 
+           pwm->set_duty_cycle(pwm_idx[i], interp(thruster_force[i], forces, forces_pwm));
+
+}
         // tilt pwm
-        pwm->set_duty_cycle(tilt_idx, 1100 + 8.888*(tilt_angle + 45));
+std::cout << "Tilt, angle = " << tilt_angle << ", pwm = " << 1100 + 8.888*(tilt_angle + 45) << std::endl; 
+        pwm->set_duty_cycle(pwm_idx[6], 1100 + 8.888*(tilt_angle + 45));
 
-        ros::spin();
+        ros::spinOnce();
         loop.sleep();
     }
 
