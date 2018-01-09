@@ -10,10 +10,13 @@
 
 std::vector<double> thruster_force;
 double tilt_angle;
+double thruster_time;
+double tilt_time;
 
 void readThrusters(const sensor_msgs::JointStateConstPtr &msg)
 {
     const std::vector<std::string> names = {"thr1", "thr2", "thr3", "thr4", "thr5", "thr6"};
+    thruster_time = ros::Time::now().toSec();
     for(int i = 0; i<msg->name.size();++i)
     {
         for(int j = 0; j<6; ++j)
@@ -31,6 +34,7 @@ void readTilt(const sensor_msgs::JointStateConstPtr &msg)
 {
     if(msg->name.size() && msg->position.size())
     {
+        tilt_time = ros::Time::now().toSec();
         tilt_angle = msg->position[0];
         if(std::abs(tilt_angle) > 45)
             tilt_angle = 45 * tilt_angle/std::abs(tilt_angle);
@@ -93,6 +97,7 @@ int main(int argc, char *argv[])
     ros::NodeHandle nh;
     thruster_force.resize(6, 0);
     tilt_angle = 0;
+    thruster_time = tilt_time = 0;
     ros::Rate loop(20);
 
     ros::Subscriber thruster_sub = nh.subscribe("thruster_command", 1,
@@ -106,17 +111,21 @@ int main(int argc, char *argv[])
 
     while (ros::ok())
     {
+        const double t= ros::Time::now().toSec();
+        if(t - thruster_time > 1)
+            thruster_force = {0,0,0,0,0,0};
+        if(t - tilt_time > 1)
+            tilt_angle = 0;
+
         // apply thruster pwm
         for(int i = 0; i < 6; ++i)
-{
-double v = interp(thruster_force[i], forces, forces_pwm);
-std::cout << "Thr# " << i << ", force = " << thruster_force[i] << ", pwm = " << v << std::endl; 
-
-           pwm->set_duty_cycle(pwm_idx[i], interp(thruster_force[i], forces, forces_pwm));
-
-}
+        {
+            double v = interp(thruster_force[i], forces, forces_pwm);
+            //std::cout << "Thr# " << i << ", force = " << thruster_force[i] << ", pwm = " << v << std::endl; 
+            pwm->set_duty_cycle(pwm_idx[i], interp(thruster_force[i], forces, forces_pwm));
+        }
         // tilt pwm
-std::cout << "Tilt, angle = " << tilt_angle << ", pwm = " << 1100 + 8.888*(tilt_angle + 45) << std::endl; 
+        //std::cout << "Tilt, angle = " << tilt_angle << ", pwm = " << 1100 + 8.888*(tilt_angle + 45) << std::endl; 
         pwm->set_duty_cycle(pwm_idx[6], 1100 + 8.888*(tilt_angle + 45));
 
         ros::spinOnce();
