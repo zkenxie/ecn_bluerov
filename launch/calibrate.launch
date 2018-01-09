@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+<!--     <group ns="pirov"> -->
+    <node name="calibrator" pkg="camera_calibration" type="cameracalibrator.py" output="screen" args="-s 8x6 -q 0.025">
+        <remap from="image" to="image/compressed"/>
+    </node>
+<!-- </group> -->
+</launch>
+
