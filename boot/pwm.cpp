@@ -13,6 +13,26 @@ double tilt_angle;
 double thruster_time;
 double tilt_time;
 
+double interp(double v, const std::vector<double> &x, const std::vector<double> &y)
+{
+    // no extrapolation
+    if(v <= x[0])
+        return y[0];
+    else if(v >=x.back())
+        return y.back();
+
+    int i = 0;
+    while ( v > x[i+1] ) i++;
+
+    const double xL = x[i], yL = y[i], xR = x[i+1], yR = y[i+1];
+
+    double dydx = ( yR - yL ) / ( xR - xL );
+
+    return yL + dydx * ( v - xL );
+}
+
+
+
 void readThrusters(const sensor_msgs::JointStateConstPtr &msg)
 {
     const std::vector<std::string> names = {"thr1", "thr2", "thr3", "thr4", "thr5", "thr6"};
@@ -34,31 +54,13 @@ void readTilt(const sensor_msgs::JointStateConstPtr &msg)
 {
     if(msg->name.size() && msg->position.size())
     {
+        std::cout << "read tilt command: " << msg->position[0] << std::endl;
         tilt_time = ros::Time::now().toSec();
         tilt_angle = msg->position[0];
         if(std::abs(tilt_angle) > 45)
             tilt_angle = 45 * tilt_angle/std::abs(tilt_angle);
     }
 }
-
-double interp(double v, const std::vector<double> &x, const std::vector<double> &y)
-{
-    // no extrapolation
-    if(v <= x[0])
-        return y[0];
-    else if(v >=x.back())
-        return y.back();
-
-    int i = 0;
-    while ( v > x[i+1] ) i++;
-
-    const double xL = x[i], yL = y[i], xR = x[i+1], yR = y[i+1];
-
-    double dydx = ( yR - yL ) / ( xR - xL );
-
-    return yL + dydx * ( v - xL );
-}
-
 
 int main(int argc, char *argv[])
 {
@@ -98,11 +100,11 @@ int main(int argc, char *argv[])
     thruster_force.resize(6, 0);
     tilt_angle = 0;
     thruster_time = tilt_time = 0;
-    ros::Rate loop(20);
+    ros::Rate loop(50);
 
-    ros::Subscriber thruster_sub = nh.subscribe("thruster_command", 1,
+    ros::Subscriber thruster_sub = nh.subscribe("thruster_command", 10,
                                                 readThrusters);
-    ros::Subscriber tilt_sub = nh.subscribe("tilt_command", 1,
+    ros::Subscriber tilt_sub = nh.subscribe("tilt_command", 10,
                                             readTilt);
 
     // maps
@@ -120,9 +122,9 @@ int main(int argc, char *argv[])
         // apply thruster pwm
         for(int i = 0; i < 6; ++i)
         {
-            double v = interp(thruster_force[i], forces, forces_pwm);
+            const double v = interp(thruster_force[i], forces, forces_pwm);
             //std::cout << "Thr# " << i << ", force = " << thruster_force[i] << ", pwm = " << v << std::endl; 
-            pwm->set_duty_cycle(pwm_idx[i], interp(thruster_force[i], forces, forces_pwm));
+            pwm->set_duty_cycle(pwm_idx[i], v);
         }
         // tilt pwm
         //std::cout << "Tilt, angle = " << tilt_angle << ", pwm = " << 1100 + 8.888*(tilt_angle + 45) << std::endl; 
@@ -131,6 +133,11 @@ int main(int argc, char *argv[])
         ros::spinOnce();
         loop.sleep();
     }
+    
+    // stop pwms
+    for(auto idx: pwm_idx)
+            pwm->set_duty_cycle(idx, 1500);
+    sleep(3);
 
     return 0;
 }

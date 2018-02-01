@@ -40,3 +40,6 @@ add_library(navio2 ${navio2_SRC})
 
 add_executable(pirov_pwm boot/pwm.cpp)
 target_link_libraries(pirov_pwm navio2 ${catkin_LIBRARIES})
+
+add_executable(pirov_imu  boot/AHRS.cpp boot/AHRS.hpp)
+target_link_libraries(pirov_imu navio2 ${catkin_LIBRARIES})
