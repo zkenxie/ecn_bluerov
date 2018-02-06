@@ -381,7 +381,7 @@ void print_help()
 
 //============================== Main loop ====================================
 
-void imuLoop(AHRS* ahrs)
+void imuLoop(AHRS* ahrs,Socket sock)
 {
     // Orientation data
 
@@ -428,12 +428,13 @@ void imuLoop(AHRS* ahrs)
     if(dtsumm > 0.05)
     {
         // Network output
+       sock.output(ahrs->getW(),ahrs->getX(),ahrs->getY(),ahrs->getZ(),int(1/dt));
         msg_imu.orientation.x=ahrs->getX();
         msg_imu.orientation.y=ahrs->getY();
         msg_imu.orientation.z=ahrs->getZ();
         msg_imu.orientation.w=ahrs->getW();
         std::cout<<msg_imu.orientation.x<<std::endl;
-         dtsumm = 0;
+        dtsumm = 0;
     }
 }
 
@@ -455,10 +456,19 @@ int main(int argc, char *argv[])
     //recupere le nom du imu
 
     //PROBLEME!!!!! ne reconnait pas sensor_name comme parametre
-    std::string sensor_name;
-    nh_.getParam("imu",sensor_name);
-    std::cout<<"sensor_name"<<sensor_name<<std::endl;
-    auto imu = get_inertial_sensor(sensor_name);
+    std::string sensor_name="lsm";
+/*    
+if (nh_.getParam("sensor_name", sensor_name))
+    {
+      ROS_INFO("Got param: %sensor_name", sensor_name.c_str());
+    }
+    else
+    {
+      ROS_ERROR("Failed to get param 'sensor_name'");
+    }
+*/
+  
+  auto imu = get_inertial_sensor(sensor_name);
     if (!imu) {
         printf("Wrong sensor name. Select: mpu or lsm\n");
         return EXIT_FAILURE;
@@ -476,7 +486,7 @@ int main(int argc, char *argv[])
 
     //--------------------------- Network setup -------------------------------
 
-    /*A quoi ça sert?
+    //A quoi ca sert?
     Socket sock;
 
     if (argc == 5)
@@ -485,14 +495,20 @@ int main(int argc, char *argv[])
             sock = Socket(argv[1], argv[2]);
         else
             sock = Socket();
-    */
+    
     std::cout<<"coucou 1 "<<std::endl;
     auto ahrs = std::unique_ptr <AHRS>{new AHRS(move(imu)) };
 
     //-------------------- Setup gyroscope offset -----------------------------
     std::cout<<"coucou 2"<<std::endl;
     ahrs->setGyroOffset();
+
+
     while(ros::ok())
-        imuLoop(ahrs.get());
+    {
+        imuLoop(ahrs.get(),sock);
         pub_imu.publish(msg_imu);
+        ros::spinOnce();        
+
+    }
 }
