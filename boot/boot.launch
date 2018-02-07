@@ -12,6 +12,8 @@
             <param name="framerate" value="20"/>
             <param name="camera_frame_id" value="raspicam"/>
         </node>
+        
+        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find ecn_bluerov)/urdf/pirov.xacro"/>
 
     </group>
 </launch>
