@@ -96,14 +96,14 @@
 
   <link name="base_link">
     <visual>
-      <origin xyz="-0.241 0.165 0.17" rpy="${-PI/2} 0 -${PI/2}"/>
+      <origin xyz="-0.241 0.165 0.17" rpy="${PI/2} 0 -${PI/2}"/>
       <!--origin xyz="-0.241 0.165 0.17" rpy="${PI/2} 0 -${PI/2}"/-->
       <geometry>
 	<mesh filename="file://$(find bluerov_ffg)/mesh/brov-redux.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </visual>
      <inertial>
-      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <origin xyz="0 0 -0.1" rpy="0 0 0"/>
       <mass value="5"/>
       <inertia
 	  ixx="5"
@@ -116,12 +116,32 @@
   <buoyancy>
       <compensation>1.01</compensation>
       <origin xyz= "0 0 0"/>
-      <limit radius=".1"/>
+      <limit radius="0.05"/>
       <damping xyz="50 100 60" rpy="50 50 50"/>
   </buoyancy>
   </link>
   
-  <link name="camera"/>
+  <link name="camera">
+    <visual>
+      <geometry>
+        <cylinder radius="0.01" length="0.03"/>
+      </geometry>
+    </visual>
+     <inertial>
+      <mass value="0.001"/>
+      <inertia
+	  ixx="0.001"
+	  ixy="0.0"
+	  ixz="0.0"
+	  iyy="0.001"
+	  iyz="0"
+	  izz="0.001"/>
+    </inertial>
+  </link>
+  
+    <gazebo reference="camera">
+        <material>Gazebo/Black</material>
+    </gazebo>
   
   <joint name="tilt" type="revolute">
     <parent link="base_link"/>
