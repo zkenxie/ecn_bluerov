@@ -122,7 +122,19 @@
   </buoyancy>
   </link>
   
-  <link name="body"/>
+  <link name="body">
+      <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia
+	  ixx="0.001"
+	  ixy="0.0"
+	  ixz="0.0"
+	  iyy="0.001"
+	  iyz="0.001"
+	  izz="0.001"/>
+    </inertial>
+  </link>
   
   <joint name="body_offset" type="fixed">
     <parent link="base_link"/>
@@ -131,8 +143,8 @@
   </joint>
   
   <link name="camera">
+    <origin rpy="0 ${PI/2} 0"/>
     <visual>
-        <origin rpy="0 ${PI/2} 0"/>
       <geometry>
         <cylinder radius="0.01" length="0.03"/>
       </geometry>
