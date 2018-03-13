@@ -57,8 +57,8 @@ void readTilt(const sensor_msgs::JointStateConstPtr &msg)
         std::cout << "read tilt command: " << msg->position[0] << std::endl;
         tilt_time = ros::Time::now().toSec();
         tilt_angle = msg->position[0];
-        if(std::abs(tilt_angle) > 45)
-            tilt_angle = 45 * tilt_angle/std::abs(tilt_angle);
+        if(std::abs(tilt_angle) > 0.785)
+            tilt_angle = 0.785 * tilt_angle/std::abs(tilt_angle);
     }
 }
 
@@ -127,8 +127,8 @@ int main(int argc, char *argv[])
             pwm->set_duty_cycle(pwm_idx[i], v);
         }
         // tilt pwm
-        //std::cout << "Tilt, angle = " << tilt_angle << ", pwm = " << 1100 + 8.888*(tilt_angle + 45) << std::endl; 
-        pwm->set_duty_cycle(pwm_idx[6], 1100 + 8.888*(tilt_angle + 45));
+        //std::cout << "Tilt, angle = " << tilt_angle << ", pwm = " << 1100 + 509.3*(tilt_angle + 0.785) << std::endl; 
+        pwm->set_duty_cycle(pwm_idx[6], 1100 + 509.3*(tilt_angle + 0.785));
 
         ros::spinOnce();
         loop.sleep();
