@@ -16,6 +16,8 @@
   <xacro:property name="thr6_x" value="0.028"/>
   <xacro:property name="thr6_z" value="-0.127"/>
   
+  <xacro:property name="x_offset" value="0.02"/>
+  
   <xacro:property name="eps" value="0.00000001"/>
   
   <!-- Thruster link -->
@@ -117,37 +119,19 @@
   <buoyancy>
       <compensation>1.01</compensation>
       <origin xyz= "0 0 0"/>
-      <limit radius="0.05"/>
+      <limit radius="0.01"/>
       <damping xyz="50 100 60" rpy="50 50 50"/>
   </buoyancy>
   </link>
-  
-  <link name="body">
-      <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.001"/>
-      <inertia
-	  ixx="0.001"
-	  ixy="0.0"
-	  ixz="0.0"
-	  iyy="0.001"
-	  iyz="0.001"
-	  izz="0.001"/>
-    </inertial>
-  </link>
-  
-  <joint name="body_offset" type="fixed">
-    <parent link="base_link"/>
-    <child link="body"/>
-    <origin xyz="0.02 0 0"/>     
-  </joint>
-  
+ 
   <link name="camera">
-    <origin rpy="0 ${PI/2} 0"/>
     <visual>
       <geometry>
         <cylinder radius="0.01" length="0.03"/>
-      </geometry>
+      </geometry> 
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
     </visual>
      <inertial>
       <mass value="0.001"/>
@@ -166,46 +150,46 @@
     </gazebo>
   
   <joint name="tilt" type="revolute">
-    <parent link="body"/>
+    <parent link="base_link"/>
     <child link="camera"/>
-    <origin xyz="0.15 0 0"/>   
+    <origin xyz="${x_offset + .15} 0 0" rpy="0 ${PI/2} 0"/>   
     <axis xyz="0 1 0" />
     <limit effort="100" velocity="5.0" lower="${-PI/4}" upper="${PI/4}"/>
+    <dynamics damping="0.8"/>
   </joint>
   
+ 
   <link name="lsm"/>
   <link name="mpu"/>
     
   
   <joint name="lsm" type="fixed">
-    <parent link="body"/>
+    <parent link="base_link"/>
     <child link="lsm"/>
-    <origin rpy="0 0 0" xyz="0.1 0.018 0.02"/>      
+    <origin rpy="0 0 0" xyz="${x_offset + .1} 0.018 0.02"/>      
   </joint>
 
     <joint name="mpu" type="fixed">
-    <parent link="body"/>
+    <parent link="base_link"/>
     <child link="mpu"/>
-    <origin rpy="0 0 0" xyz="0.11 0.018 0.02"/>      
+    <origin rpy="0 0 0" xyz="${x_offset + .11} 0.018 0.02"/>      
   </joint>
       
-  
+   
     <gazebo reference="lsm">
     <sensor name="imu_sensor" type="imu">
       <always_on>true</always_on>
       <update_rate>100</update_rate>
       <visualize>true</visualize>
-      <topic>lsm</topic>
       <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
         <topicName>lsm</topicName>
-        <bodyName>lsm</bodyName>
+        <bodyName>pirov</bodyName>
         <updateRateHZ>100.0</updateRateHZ>
         <gaussianNoise>0.01</gaussianNoise>
         <xyzOffset>0 0 0</xyzOffset>
         <rpyOffset>0 0 0</rpyOffset>
         <frameName>lsm</frameName>
       </plugin>
-      <pose>0 0 0 0 0 0</pose>
     </sensor>
    </gazebo>
    
@@ -214,17 +198,15 @@
       <always_on>true</always_on>
       <update_rate>100</update_rate>
       <visualize>true</visualize>
-      <topic>mpu</topic>
       <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
         <topicName>mpu</topicName>
-        <bodyName>mpu</bodyName>
+        <bodyName>pirov</bodyName>
         <updateRateHZ>100.0</updateRateHZ>
         <gaussianNoise>0.01</gaussianNoise>
         <xyzOffset>0 0 0</xyzOffset>
         <rpyOffset>0 0 0</rpyOffset>
         <frameName>mpu</frameName>
       </plugin>
-      <pose>0 0 0 0 0 0</pose>
     </sensor>
    </gazebo>
   
