@@ -12,7 +12,13 @@
             <param name="framerate" value="20"/>
             <param name="camera_frame_id" value="raspicam"/>
         </node>
-
+        
+        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find ecn_bluerov)/urdf/pirov.xacro"/>
+        
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+            <remap from="joint_states" to="tilt_command"/>
+        </node>
+        
         <node type="pirov_leak" pkg="ecn_bluerov" name="leak_interface" respawn="true" >
         </node>
 
