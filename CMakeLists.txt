@@ -15,10 +15,11 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES ecn_bluerov
-#  CATKIN_DEPENDS cv_bridge sensor_msgs std_msgs
+  LIBRARIES ecn_bluerov
+  CATKIN_DEPENDS cv_bridge sensor_msgs std_msgs geometry_msgs
 #  DEPENDS system_lib
 )
+
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -43,3 +44,12 @@ target_link_libraries(pirov_pwm navio2 ${catkin_LIBRARIES})
 
 add_executable(pirov_imu  boot/AHRS.cpp boot/AHRS.hpp)
 target_link_libraries(pirov_imu navio2 ${catkin_LIBRARIES})
+
+add_executable(pirov_leak boot/leak.cpp)
+target_link_libraries(pirov_leak navio2 ${catkin_LIBRARIES})
+
+add_executable(pirov_adc boot/ADC.cpp)
+target_link_libraries(pirov_adc navio2 ${catkin_LIBRARIES})
+
+#add_executable(pirov_barometer boot/barometer.cpp)
+#target_link_libraries(pirov_barometer navio2 ${catkin_LIBRARIES})
