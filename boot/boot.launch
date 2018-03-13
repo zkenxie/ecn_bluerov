@@ -19,7 +19,14 @@
             <remap from="joint_states" to="tilt_command"/>
         </node>
         
+        <node type="pirov_leak" pkg="ecn_bluerov" name="leak_interface" respawn="true" >
+        </node>
+
+        <node type="pirov_adc" pkg="ecn_bluerov" name="adc_interface" respawn="true" output="screen">
+        </node>
         
+        <node type="bar30.py" pkg="ecn_bluerov" name="barometer_interface" respawn="true">
+        </node>
 
     </group>
 </launch>

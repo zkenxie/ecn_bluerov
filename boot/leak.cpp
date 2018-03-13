@@ -1,3 +1,9 @@
+#include <ros/ros.h>
+#include <std_msgs/Float32MultiArray.h>
+
+#include <iostream>
+#include <stdio.h>
+
 #include <unistd.h>
 #include <cstdio>
 
@@ -6,6 +12,8 @@
 #include <memory>
 
 #define READ_FAILED -1
+
+std_msgs::Float32MultiArray msg;
 
 std::unique_ptr <RCInput> get_rcin()
 {
@@ -20,20 +28,34 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    auto rcin = get_rcin();
+// declare node and loop rate at 10 Hz
+    ros::init(argc, argv, "leak_node");
+    ROS_INFO("ros connected to pirov_leak");
+    ros::NodeHandle nh_("~");
+    ros::Rate loop(10);
 
+
+    auto rcin = get_rcin();
     rcin->initialize();
 
-    while (true)
+//Publishing
+    ros::Publisher pub_leak = nh_.advertise<std_msgs::Float32MultiArray>("leak_topic", 1);
+
+    while (ros::ok())
     {
-        int period = rcin->read(2);
+   for (int i=0;i<7;i++){
+        float period = rcin->read(0);
         if (period == READ_FAILED)
             return EXIT_FAILURE;
-        printf("%d\n", period);
         
-        sleep(1);
+        msg.data.push_back(period);    
+        pub_leak.publish(msg);        
+        printf("%d ",period);      
+
+   }      
+   msg.data.clear(); 
+    sleep(1);
     }
 
     return 0;
 }
-
