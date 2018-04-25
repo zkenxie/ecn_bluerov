@@ -1,4 +1,4 @@
-ROS package to communicate with the BlueROV
+ROS package for low-level communication with the BlueROV
 
 Uses the Navio2 submodule.
 

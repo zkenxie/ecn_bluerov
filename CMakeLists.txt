@@ -15,8 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
 #  INCLUDE_DIRS include
-  LIBRARIES ecn_bluerov
-  CATKIN_DEPENDS cv_bridge sensor_msgs std_msgs geometry_msgs
+  CATKIN_DEPENDS cv_bridge sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
